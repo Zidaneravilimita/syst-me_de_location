@@ -2,7 +2,7 @@
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
 
-export default function RegisterPage({ onNavigate }) {
+export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
   const { register } = useAuth()
   const [form, setForm] = useState({
     name: '',
@@ -13,6 +13,8 @@ export default function RegisterPage({ onNavigate }) {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [globalError, setGlobalError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const validate = () => {
     const newErrors = {}
@@ -113,16 +115,26 @@ export default function RegisterPage({ onNavigate }) {
             <label className="auth-label" htmlFor="register-password">
               Mot de passe
             </label>
-            <input
-              id="register-password"
-              className={`auth-input ${errors.password ? 'auth-input--error' : ''}`}
-              type="password"
-              name="password"
-              placeholder="Minimum 6 caractères"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
+            <div className="auth-input-wrap">
+              <input
+                id="register-password"
+                className={`auth-input ${errors.password ? 'auth-input--error' : ''}`}
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Minimum 6 caractères"
+                value={form.password}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Masquer' : 'Afficher'}
+              </button>
+            </div>
             {errors.password && <span className="auth-field-error">{errors.password}</span>}
           </div>
 
@@ -130,16 +142,26 @@ export default function RegisterPage({ onNavigate }) {
             <label className="auth-label" htmlFor="register-confirm">
               Confirmer le mot de passe
             </label>
-            <input
-              id="register-confirm"
-              className={`auth-input ${errors.confirmPassword ? 'auth-input--error' : ''}`}
-              type="password"
-              name="confirmPassword"
-              placeholder="Répétez votre mot de passe"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
+            <div className="auth-input-wrap">
+              <input
+                id="register-confirm"
+                className={`auth-input ${errors.confirmPassword ? 'auth-input--error' : ''}`}
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                placeholder="Répétez votre mot de passe"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-pressed={showConfirmPassword}
+              >
+                {showConfirmPassword ? 'Masquer' : 'Afficher'}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <span className="auth-field-error">{errors.confirmPassword}</span>
             )}
@@ -155,21 +177,24 @@ export default function RegisterPage({ onNavigate }) {
           </button>
         </form>
 
-        <p className="auth-switch">
-          Déjà un compte ?{' '}
-          <button
-            id="go-to-login-btn"
-            type="button"
-            className="auth-link"
-            onClick={() => onNavigate('login')}
-          >
-            Se connecter
-          </button>
-        </p>
+        {canAccessLogin && (
+          <p className="auth-switch">
+            Déjà un compte ?{' '}
+            <button
+              id="go-to-login-btn"
+              type="button"
+              className="auth-link"
+              onClick={() => onNavigate('login')}
+            >
+              Se connecter
+            </button>
+          </p>
+        )}
 
-        <button type="button" className="auth-back" onClick={() => onNavigate('home')}>
-          ← Retour à l'accueil
+        <button type="button" className="auth-forgot" onClick={() => setGlobalError('Fonction bientôt disponible.')}>
+          Mot de passe oublié ?
         </button>
+
       </div>
     </div>
   )

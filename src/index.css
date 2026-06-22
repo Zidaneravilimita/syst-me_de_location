@@ -1224,6 +1224,12 @@ a {
   gap: 8px;
 }
 
+.auth-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .auth-label {
   font-size: 14px;
   font-weight: 600;
@@ -1231,6 +1237,7 @@ a {
 }
 
 .auth-input {
+  flex: 1;
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border);
@@ -1246,6 +1253,34 @@ a {
 .auth-input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.auth-password-toggle,
+.auth-forgot {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-password-toggle {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.auth-forgot {
+  display: inline-flex;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-forgot:hover,
+.auth-password-toggle:hover {
+  color: var(--primary-dark);
 }
 
 .auth-submit {

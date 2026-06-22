@@ -25,6 +25,7 @@ function getDefaultDates() {
 export default function App() {
   const defaults = getDefaultDates()
   const [page, setPage] = useState('landing')
+  const [selectedRole, setSelectedRole] = useState(null)
   const [search, setSearch] = useState({
     serviceType: 'all',
     location: locations[0],
@@ -62,15 +63,31 @@ export default function App() {
   }
 
   if (page === 'landing') {
-    return <LandingPage />
+    return (
+      <LandingPage
+        onChooseProfile={(profileId) => {
+          setSelectedRole(profileId)
+          setPage(profileId === 'admin' ? 'login' : 'register')
+        }}
+      />
+    )
   }
 
   if (page === 'login') {
-    return <LoginPage onNavigate={setPage} />
+    return (
+      <LoginPage
+        onNavigate={setPage}
+        canAccessRegister={selectedRole !== 'admin'}
+      />
+    )
   }
 
   if (page === 'register') {
-    return <RegisterPage onNavigate={setPage} />
+    if (selectedRole === 'admin') {
+      return <LoginPage onNavigate={setPage} canAccessRegister={false} />
+    }
+
+    return <RegisterPage onNavigate={setPage} canAccessLogin={selectedRole !== 'admin'} />
   }
 
   return (

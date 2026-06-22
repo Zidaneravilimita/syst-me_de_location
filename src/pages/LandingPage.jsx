@@ -22,7 +22,7 @@ const profiles = [
   },
 ]
 
-export default function LandingPage() {
+export default function LandingPage({ onChooseProfile }) {
   const [profilesOpen, setProfilesOpen] = useState(false)
   const [selectedProfile, setSelectedProfile] = useState(null)
 
@@ -70,7 +70,10 @@ export default function LandingPage() {
                   key={profile.id}
                   type="button"
                   className={`profile-card ${isActive ? 'profile-card--active' : ''}`}
-                  onClick={() => setSelectedProfile(profile.id)}
+                  onClick={() => {
+                    setSelectedProfile(profile.id)
+                    onChooseProfile?.(profile.id)
+                  }}
                 >
                   <span className="profile-card__icon">{profile.icon}</span>
                   <span className="profile-card__title">{profile.title}</span>

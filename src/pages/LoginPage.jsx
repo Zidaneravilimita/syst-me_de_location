@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
 
-export default function LoginPage({ onNavigate }) {
+export default function LoginPage({ onNavigate, canAccessRegister = true }) {
   const { login } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -70,18 +71,32 @@ export default function LoginPage({ onNavigate }) {
             <label className="auth-label" htmlFor="login-password">
               Mot de passe
             </label>
-            <input
-              id="login-password"
-              className="auth-input"
-              type="password"
-              name="password"
-              placeholder="Votre mot de passe"
-              value={form.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-              required
-            />
+            <div className="auth-input-wrap">
+              <input
+                id="login-password"
+                className="auth-input"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Votre mot de passe"
+                value={form.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Masquer' : 'Afficher'}
+              </button>
+            </div>
           </div>
+
+          <button type="button" className="auth-forgot" onClick={() => setError('Fonction bientôt disponible.')}>
+            Mot de passe oublié ?
+          </button>
 
           <button
             id="login-submit-btn"
@@ -93,21 +108,20 @@ export default function LoginPage({ onNavigate }) {
           </button>
         </form>
 
-        <p className="auth-switch">
-          Pas encore de compte ?{' '}
-          <button
-            id="go-to-register-btn"
-            type="button"
-            className="auth-link"
-            onClick={() => onNavigate('register')}
-          >
-            Créer un compte
-          </button>
-        </p>
+        {canAccessRegister && (
+          <p className="auth-switch">
+            Pas encore de compte ?{' '}
+            <button
+              id="go-to-register-btn"
+              type="button"
+              className="auth-link"
+              onClick={() => onNavigate('register')}
+            >
+              Créer un compte
+            </button>
+          </p>
+        )}
 
-        <button type="button" className="auth-back" onClick={() => onNavigate('home')}>
-          ← Retour à l'accueil
-        </button>
       </div>
     </div>
   )
