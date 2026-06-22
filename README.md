@@ -1,18 +1,47 @@
-# React + Vite
+# LocHub — Plateforme de location multi-services
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Site web de location de maisons, voitures, motos et quads.
 
-Currently, two official plugins are available:
+## Fonctionnalités
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **4 types de services** : maisons, voitures, motos, quads
+- **Filtres** : par type de service et sous-catégorie (appartement, SUV, sport, etc.)
+- **Recherche** : type, lieu, dates d'arrivée et de départ
+- **18 offres** : catalogue varié avec photos, specs et prix
+- **Réservation** : modal de confirmation avec calcul automatique du prix
+- **Design responsive** : adapté mobile, tablette et desktop
 
-## React Compiler
+## Lancer le projet
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```bash
+npm install
+npm run dev
+```
 
-Note: This will impact Vite dev & build performances.
+Ouvrez [http://localhost:5173](http://localhost:5173) dans votre navigateur.
 
-## Expanding the ESLint configuration
+## Build production
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run build
+npm run preview
+```
+
+## Structure
+
+```
+src/
+├── components/
+│   ├── Header.jsx
+│   ├── Hero.jsx
+│   ├── SearchForm.jsx
+│   ├── ListingCard.jsx
+│   ├── ListingList.jsx
+│   ├── Features.jsx        # Avantages + showcase services
+│   ├── HowItWorks.jsx
+│   ├── Footer.jsx
+│   └── BookingModal.jsx
+├── data/listings.js        # Données des offres et catégories
+├── App.jsx
+└── index.css
+```
