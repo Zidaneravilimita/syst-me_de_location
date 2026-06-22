@@ -6,6 +6,7 @@ import Features, { ServiceShowcase } from './components/Features'
 import HowItWorks from './components/HowItWorks'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { listings as allListings, locations } from './data/listings'
@@ -23,7 +24,7 @@ function getDefaultDates() {
 
 export default function App() {
   const defaults = getDefaultDates()
-  const [page, setPage] = useState('home')
+  const [page, setPage] = useState('landing')
   const [search, setSearch] = useState({
     serviceType: 'all',
     location: locations[0],
@@ -58,6 +59,10 @@ export default function App() {
     }
     setLocationFilter(search.location)
     document.getElementById('annonces')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  if (page === 'landing') {
+    return <LandingPage />
   }
 
   if (page === 'login') {
