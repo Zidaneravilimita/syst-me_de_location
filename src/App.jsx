@@ -6,6 +6,8 @@ import Features, { ServiceShowcase } from './components/Features'
 import HowItWorks from './components/HowItWorks'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import { listings as allListings, locations } from './data/listings'
 
 function getDefaultDates() {
@@ -21,6 +23,7 @@ function getDefaultDates() {
 
 export default function App() {
   const defaults = getDefaultDates()
+  const [page, setPage] = useState('home')
   const [search, setSearch] = useState({
     serviceType: 'all',
     location: locations[0],
@@ -57,9 +60,17 @@ export default function App() {
     document.getElementById('annonces')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  if (page === 'login') {
+    return <LoginPage onNavigate={setPage} />
+  }
+
+  if (page === 'register') {
+    return <RegisterPage onNavigate={setPage} />
+  }
+
   return (
     <>
-      <Header />
+      <Header onNavigate={setPage} />
       <main>
         <Hero
           search={search}

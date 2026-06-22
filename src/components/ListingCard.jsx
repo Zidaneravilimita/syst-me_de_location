@@ -38,7 +38,7 @@ export default function ListingCard({ listing, onBook }) {
         </div>
 
         <div className="listing-card__features">
-          {listing.features.slice(0, 3).map((f) => (
+          {listing.features.slice(0, 2).map((f) => (
             <span key={f} className="listing-card__feature">{f}</span>
           ))}
         </div>
@@ -50,7 +50,7 @@ export default function ListingCard({ listing, onBook }) {
           </div>
           <button
             type="button"
-            className="btn btn--primary"
+            className="btn btn--primary btn--sm listing-card__btn"
             disabled={!listing.available}
             onClick={() => onBook(listing)}
           >

@@ -28,7 +28,7 @@ export default function BookingModal({ listing, search, onClose }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal modal--compact" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="modal__close" onClick={onClose} aria-label="Fermer">
           ✕
         </button>
@@ -39,62 +39,61 @@ export default function BookingModal({ listing, search, onClose }) {
             <h2>Réservation confirmée !</h2>
             <p>
               Merci {form.name} ! Votre réservation pour <strong>{listing.name}</strong>
-              a été enregistrée. Un email de confirmation a été envoyé à {form.email}.
+              est confirmée. Email envoyé à {form.email}.
             </p>
-            <div className="modal__summary">
-              <p><strong>Service :</strong> {getServiceLabel(listing.serviceType)}</p>
-              <p><strong>Lieu :</strong> {search.location}</p>
-              <p><strong>Dates :</strong> {search.startDate} → {search.endDate}</p>
-              <p><strong>Total :</strong> {total}€ ({days} {days > 1 ? unitLabelPlural : unitLabel})</p>
+            <div className="modal__summary modal__summary--grid">
+              <p><strong>Service</strong> {getServiceLabel(listing.serviceType)}</p>
+              <p><strong>Lieu</strong> {search.location}</p>
+              <p><strong>Dates</strong> {search.startDate} → {search.endDate}</p>
+              <p className="modal__total"><strong>Total</strong> {total}€</p>
             </div>
-            <button type="button" className="btn btn--primary" onClick={onClose}>
+            <button type="button" className="btn btn--primary btn--sm btn--full" onClick={onClose}>
               Fermer
             </button>
           </div>
         ) : (
           <>
-            <h2>Réserver — {listing.name}</h2>
+            <h2 className="modal__title">Réserver</h2>
 
             <div className="modal__listing">
               <img src={listing.image} alt={listing.name} />
-              <div>
-                <p className="modal__service">{getServiceLabel(listing.serviceType)}</p>
+              <div className="modal__listing-info">
+                <p className="modal__listing-name">{listing.name}</p>
                 <p className="modal__price">{listing.price}€ / {unitLabel}</p>
-                <p className="modal__specs">
-                  {listing.specs.join(' · ')}
-                </p>
               </div>
             </div>
 
-            <div className="modal__summary">
-              <p><strong>Lieu :</strong> {search.location}</p>
-              <p><strong>Arrivée :</strong> {search.startDate || '—'}</p>
-              <p><strong>Départ :</strong> {search.endDate || '—'}</p>
-              <p className="modal__total"><strong>Total estimé :</strong> {total}€</p>
+            <div className="modal__summary modal__summary--grid">
+              <p><strong>Lieu</strong> {search.location}</p>
+              <p><strong>Arrivée</strong> {search.startDate || '—'}</p>
+              <p><strong>Départ</strong> {search.endDate || '—'}</p>
+              <p className="modal__total"><strong>Total</strong> {total}€</p>
             </div>
 
             <form className="modal__form" onSubmit={handleSubmit}>
-              <div className="form-field">
-                <label htmlFor="name">Nom complet</label>
-                <input
-                  id="name"
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                  placeholder="Jean Dupont"
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
-                  placeholder="jean@exemple.fr"
-                />
+              <div className="modal__form-grid">
+                <div className="form-field">
+                  <label htmlFor="name">Nom</label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                    placeholder="Jean Dupont"
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    required
+                    placeholder="jean@exemple.fr"
+                  />
+                </div>
               </div>
               <div className="form-field">
                 <label htmlFor="phone">Téléphone</label>
@@ -107,8 +106,8 @@ export default function BookingModal({ listing, search, onClose }) {
                   placeholder="06 12 34 56 78"
                 />
               </div>
-              <button type="submit" className="btn btn--primary btn--full">
-                Confirmer la réservation — {total}€
+              <button type="submit" className="btn btn--primary btn--sm btn--full">
+                Confirmer — {total}€
               </button>
             </form>
           </>
