@@ -247,10 +247,15 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true, role =
           </p>
         )}
 
-        <button type="button" className="auth-forgot" onClick={() => setGlobalError('Fonction bientôt disponible.')}>
-          Mot de passe oublié ?
-        </button>
+        <div className="auth-actions-row">
+          <button type="button" className="auth-forgot" onClick={() => setGlobalError('Fonction bientôt disponible.')}>
+            Mot de passe oublié ?
+          </button>
 
+          <button type="button" className="auth-back" onClick={() => onNavigate('landing')}>
+            Retour
+          </button>
+        </div>
       </div>
     </div>
   )

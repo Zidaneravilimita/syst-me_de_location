@@ -125,6 +125,9 @@ export default function LoginPage({ onNavigate, canAccessRegister = true }) {
           </p>
         )}
 
+        <button type="button" className="auth-back" onClick={() => onNavigate('landing')}>
+          Retour
+        </button>
       </div>
     </div>
   )

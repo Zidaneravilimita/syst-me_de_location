@@ -22,7 +22,7 @@ const profiles = [
   },
 ]
 
-export default function LandingPage({ onChooseProfile }) {
+export default function LandingPage({ onChooseProfile, onNavigate }) {
   const [profilesOpen, setProfilesOpen] = useState(false)
   const [selectedProfile, setSelectedProfile] = useState(null)
 
@@ -55,7 +55,7 @@ export default function LandingPage({ onChooseProfile }) {
           <button
             type="button"
             className="btn landing-page__secondary"
-            onClick={() => setProfilesOpen(true)}
+            onClick={() => onNavigate?.('guide')}
           >
             En savoir plus
           </button>

@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminDashboard from './pages/AdminDashboard'
 import OwnerDashboard from './pages/OwnerDashboard'
+import GuidePage from './pages/GuidePage'
 import { listings as allListings, locations } from './data/listings'
 
 function getDefaultDates() {
@@ -67,6 +68,7 @@ export default function App() {
   if (page === 'landing') {
     return (
       <LandingPage
+        onNavigate={setPage}
         onChooseProfile={(profileId) => {
           setSelectedRole(profileId)
           setPage(profileId === 'admin' ? 'login' : 'register')
@@ -92,6 +94,10 @@ export default function App() {
         canAccessRegister={selectedRole !== 'admin'}
       />
     )
+  }
+
+  if (page === 'guide') {
+    return <GuidePage onNavigate={setPage} />
   }
 
   if (page === 'register') {
