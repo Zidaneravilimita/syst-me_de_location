@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
+import PasswordToggleIcon from '../components/PasswordToggleIcon'
 
 export default function LoginPage({ onNavigate, canAccessRegister = true }) {
   const { login } = useAuth()
@@ -88,8 +89,10 @@ export default function LoginPage({ onNavigate, canAccessRegister = true }) {
                 className="auth-password-toggle"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-pressed={showPassword}
+                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                title={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
               >
-                {showPassword ? 'Masquer' : 'Afficher'}
+                <PasswordToggleIcon visible={showPassword} />
               </button>
             </div>
           </div>

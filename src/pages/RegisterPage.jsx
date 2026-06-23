@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
+import PasswordToggleIcon from '../components/PasswordToggleIcon'
 
 export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
   const { register } = useAuth()
@@ -131,8 +132,10 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
                 className="auth-password-toggle"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-pressed={showPassword}
+                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                title={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
               >
-                {showPassword ? 'Masquer' : 'Afficher'}
+                <PasswordToggleIcon visible={showPassword} />
               </button>
             </div>
             {errors.password && <span className="auth-field-error">{errors.password}</span>}
@@ -158,8 +161,10 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
                 className="auth-password-toggle"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
                 aria-pressed={showConfirmPassword}
+                aria-label={showConfirmPassword ? 'Masquer la confirmation du mot de passe' : 'Afficher la confirmation du mot de passe'}
+                title={showConfirmPassword ? 'Masquer la confirmation du mot de passe' : 'Afficher la confirmation du mot de passe'}
               >
-                {showConfirmPassword ? 'Masquer' : 'Afficher'}
+                <PasswordToggleIcon visible={showConfirmPassword} />
               </button>
             </div>
             {errors.confirmPassword && (
