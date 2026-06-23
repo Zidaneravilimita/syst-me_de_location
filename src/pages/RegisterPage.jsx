@@ -3,11 +3,13 @@ import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
 import PasswordToggleIcon from '../components/PasswordToggleIcon'
 
-export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
+export default function RegisterPage({ onNavigate, canAccessLogin = true, role = 'client' }) {
   const { register } = useAuth()
   const [form, setForm] = useState({
     name: '',
     email: '',
+    phone: '',
+    company: '',
     password: '',
     confirmPassword: '',
   })
@@ -24,6 +26,9 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
     }
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = 'Veuillez saisir un email valide.'
+    }
+    if (role === 'owner' && !form.phone.trim()) {
+      newErrors.phone = 'Veuillez saisir un numero de telephone.'
     }
     if (!form.password || form.password.length < 6) {
       newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères.'
@@ -50,8 +55,15 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
 
     setLoading(true)
     try {
-      register({ name: form.name.trim(), email: form.email, password: form.password })
-      onNavigate('home')
+      register({
+        name: form.name.trim(),
+        email: form.email,
+        password: form.password,
+        role,
+        phone: form.phone.trim(),
+        company: form.company.trim(),
+      })
+      onNavigate(role === 'owner' ? 'owner-dashboard' : 'home')
     } catch (err) {
       setGlobalError(err.message)
     } finally {
@@ -68,7 +80,9 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
 
         <div className="auth-header">
           <h1 className="auth-title">Inscription</h1>
-          <p className="auth-subtitle">Créez votre compte pour continuer</p>
+          <p className="auth-subtitle">
+            {role === 'owner' ? 'Creez votre compte proprietaire' : 'Créez votre compte pour continuer'}
+          </p>
         </div>
 
         {globalError && (
@@ -111,6 +125,43 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
             />
             {errors.email && <span className="auth-field-error">{errors.email}</span>}
           </div>
+
+          {role === 'owner' && (
+            <>
+              <div className="auth-field">
+                <label className="auth-label" htmlFor="register-phone">
+                  Telephone
+                </label>
+                <input
+                  id="register-phone"
+                  className={`auth-input ${errors.phone ? 'auth-input--error' : ''}`}
+                  type="tel"
+                  name="phone"
+                  placeholder="+261 34 00 000 00"
+                  value={form.phone}
+                  onChange={handleChange}
+                  autoComplete="tel"
+                />
+                {errors.phone && <span className="auth-field-error">{errors.phone}</span>}
+              </div>
+
+              <div className="auth-field">
+                <label className="auth-label" htmlFor="register-company">
+                  Nom du dossier ou societe
+                </label>
+                <input
+                  id="register-company"
+                  className="auth-input"
+                  type="text"
+                  name="company"
+                  placeholder="Ex: Location Rakoto"
+                  value={form.company}
+                  onChange={handleChange}
+                  autoComplete="organization"
+                />
+              </div>
+            </>
+          )}
 
           <div className="auth-field">
             <label className="auth-label" htmlFor="register-password">
@@ -178,7 +229,7 @@ export default function RegisterPage({ onNavigate, canAccessLogin = true }) {
             className="btn btn--primary btn--full auth-submit"
             disabled={loading}
           >
-            {loading ? 'Création du compte…' : "S'inscrire gratuitement"}
+            {loading ? 'Création du compte…' : role === 'owner' ? 'Creer mon compte proprietaire' : "S'inscrire gratuitement"}
           </button>
         </form>
 

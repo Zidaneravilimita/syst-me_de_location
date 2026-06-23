@@ -10,6 +10,7 @@ import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminDashboard from './pages/AdminDashboard'
+import OwnerDashboard from './pages/OwnerDashboard'
 import { listings as allListings, locations } from './data/listings'
 
 function getDefaultDates() {
@@ -77,7 +78,17 @@ export default function App() {
   if (page === 'login') {
     return (
       <LoginPage
-        onNavigate={(nextPage) => setPage(selectedRole === 'admin' && nextPage === 'home' ? 'dashboard' : nextPage)}
+        onNavigate={(nextPage) => {
+          if (selectedRole === 'admin' && nextPage === 'home') {
+            setPage('dashboard')
+            return
+          }
+          if (selectedRole === 'owner' && nextPage === 'home') {
+            setPage('owner-dashboard')
+            return
+          }
+          setPage(nextPage)
+        }}
         canAccessRegister={selectedRole !== 'admin'}
       />
     )
@@ -88,11 +99,21 @@ export default function App() {
       return <LoginPage onNavigate={setPage} canAccessRegister={false} />
     }
 
-    return <RegisterPage onNavigate={setPage} canAccessLogin={selectedRole !== 'admin'} />
+    return (
+      <RegisterPage
+        onNavigate={setPage}
+        canAccessLogin={selectedRole !== 'admin'}
+        role={selectedRole === 'owner' ? 'owner' : 'client'}
+      />
+    )
   }
 
   if (page === 'dashboard') {
     return <AdminDashboard onNavigate={setPage} />
+  }
+
+  if (page === 'owner-dashboard') {
+    return <OwnerDashboard onNavigate={setPage} />
   }
 
   return (

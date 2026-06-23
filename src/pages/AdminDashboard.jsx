@@ -3,13 +3,27 @@ import Logo from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
 import { getCategoryLabel, getServiceLabel, listings as initialListings } from '../data/listings'
 
-const owners = [
+const ownerStatuses = [
+  { value: 'validated', label: 'Valide', badge: 'success' },
+  { value: 'verification', label: 'En verification', badge: 'warning' },
+  { value: 'paused', label: 'En pause', badge: 'muted' },
+  { value: 'rejected', label: 'Rejete', badge: 'danger' },
+]
+
+const listingStatuses = [
+  { value: 'published', label: 'Publie', badge: 'success' },
+  { value: 'pending', label: 'En attente', badge: 'warning' },
+  { value: 'rejected', label: 'Rejete', badge: 'danger' },
+  { value: 'unavailable', label: 'Plus disponible', badge: 'muted' },
+]
+
+const initialOwners = [
   {
     id: 1,
     name: 'Claire Martin',
     email: 'claire.martin@example.com',
     phone: '+33 6 12 45 78 90',
-    status: 'Validé',
+    status: 'validated',
     listings: [1, 5, 8],
   },
   {
@@ -17,7 +31,7 @@ const owners = [
     name: 'Karim Benali',
     email: 'karim.benali@example.com',
     phone: '+33 6 32 18 44 21',
-    status: 'En vérification',
+    status: 'verification',
     listings: [2, 7, 11, 15],
   },
   {
@@ -25,7 +39,7 @@ const owners = [
     name: 'Sophie Laurent',
     email: 'sophie.laurent@example.com',
     phone: '+33 7 21 66 84 10',
-    status: 'Validé',
+    status: 'validated',
     listings: [3, 6, 12, 16],
   },
   {
@@ -33,18 +47,28 @@ const owners = [
     name: 'Hugo Bernard',
     email: 'hugo.bernard@example.com',
     phone: '+33 6 88 10 34 52',
-    status: 'Suspendu',
+    status: 'paused',
     listings: [4, 9, 13, 17, 18],
   },
 ]
 
 const menuItems = [
   { id: 'overview', label: 'Vue globale', icon: 'grid' },
-  { id: 'owners', label: 'Propriétaires', icon: 'users' },
+  { id: 'owners', label: 'Proprietaires', icon: 'users' },
   { id: 'listings', label: 'Annonces', icon: 'list' },
-  { id: 'bookings', label: 'Réservations', icon: 'calendar' },
-  { id: 'settings', label: 'Paramètres', icon: 'settings' },
+  { id: 'bookings', label: 'Reservations', icon: 'calendar' },
+  { id: 'settings', label: 'Parametres', icon: 'settings' },
 ]
+
+function getStatusMeta(items, value) {
+  return items.find((item) => item.value === value) ?? items[0]
+}
+
+function getInitialListingStatus(listing, index) {
+  if (!listing.available) return 'unavailable'
+  if (index % 7 === 0) return 'pending'
+  return 'published'
+}
 
 function MenuIcon({ name }) {
   const common = {
@@ -115,10 +139,20 @@ function StatCard({ label, value, detail }) {
   )
 }
 
+function StatusBadge({ meta }) {
+  return <span className={`admin-badge admin-badge--${meta.badge}`}>{meta.label}</span>
+}
+
 export default function AdminDashboard({ onNavigate }) {
   const { user, logout } = useAuth()
   const [activeMenu, setActiveMenu] = useState('overview')
-  const [listings, setListings] = useState(initialListings)
+  const [owners, setOwners] = useState(initialOwners)
+  const [listings, setListings] = useState(() =>
+    initialListings.map((listing, index) => ({
+      ...listing,
+      adminStatus: getInitialListingStatus(listing, index),
+    })),
+  )
   const [query, setQuery] = useState('')
 
   const enrichedListings = useMemo(
@@ -126,9 +160,9 @@ export default function AdminDashboard({ onNavigate }) {
       listings.map((listing, index) => ({
         ...listing,
         owner: owners[index % owners.length],
-        status: listing.available ? 'Publié' : 'Indisponible',
+        statusMeta: getStatusMeta(listingStatuses, listing.adminStatus),
       })),
-    [listings],
+    [listings, owners],
   )
 
   const filteredListings = enrichedListings.filter((listing) => {
@@ -136,14 +170,24 @@ export default function AdminDashboard({ onNavigate }) {
     return searchText.includes(query.toLowerCase())
   })
 
-  const publishedCount = enrichedListings.filter((listing) => listing.available).length
-  const unavailableCount = enrichedListings.length - publishedCount
+  const publishedCount = enrichedListings.filter((listing) => listing.adminStatus === 'published').length
+  const pendingCount = enrichedListings.filter((listing) => listing.adminStatus === 'pending').length
+  const rejectedCount = enrichedListings.filter((listing) => listing.adminStatus === 'rejected').length
+  const ownerPendingCount = owners.filter((owner) => owner.status === 'verification').length
 
-  const toggleListingAvailability = (listingId) => {
+  const updateListingStatus = (listingId, status) => {
     setListings((prev) =>
       prev.map((listing) =>
-        listing.id === listingId ? { ...listing, available: !listing.available } : listing,
+        listing.id === listingId
+          ? { ...listing, adminStatus: status, available: status === 'published' }
+          : listing,
       ),
+    )
+  }
+
+  const updateOwnerStatus = (ownerId, status) => {
+    setOwners((prev) =>
+      prev.map((owner) => (owner.id === ownerId ? { ...owner, status } : owner)),
     )
   }
 
@@ -177,7 +221,7 @@ export default function AdminDashboard({ onNavigate }) {
         <div className="admin-sidebar__account">
           <span>{user?.name ?? 'Administrateur'}</span>
           <button type="button" onClick={handleLogout}>
-            Déconnexion
+            Deconnexion
           </button>
         </div>
       </aside>
@@ -194,18 +238,18 @@ export default function AdminDashboard({ onNavigate }) {
         </header>
 
         <section className="admin-stats" aria-label="Indicateurs de la plateforme">
-          <StatCard label="Propriétaires" value={owners.length} detail="comptes suivis" />
-          <StatCard label="Annonces" value={enrichedListings.length} detail={`${publishedCount} publiées`} />
-          <StatCard label="À vérifier" value={unavailableCount} detail="annonces indisponibles" />
-          <StatCard label="Réservations" value="128" detail="ce mois-ci" />
+          <StatCard label="Proprietaires" value={owners.length} detail={`${ownerPendingCount} en verification`} />
+          <StatCard label="Annonces" value={enrichedListings.length} detail={`${publishedCount} publiees`} />
+          <StatCard label="A verifier" value={pendingCount} detail="annonces en attente" />
+          <StatCard label="Rejetees" value={rejectedCount} detail="annonces refusees" />
         </section>
 
         {activeMenu === 'overview' && (
           <section className="admin-panel">
             <div className="admin-panel__header">
               <div>
-                <h2>Activité récente</h2>
-                <p>Suivi rapide des propriétaires et des annonces de la plateforme.</p>
+                <h2>Activite recente</h2>
+                <p>Suivi rapide des proprietaires et des annonces de la plateforme.</p>
               </div>
             </div>
             <div className="admin-activity">
@@ -214,11 +258,9 @@ export default function AdminDashboard({ onNavigate }) {
                   <img src={listing.image} alt="" />
                   <div>
                     <strong>{listing.name}</strong>
-                    <span>{listing.owner.name} · {getServiceLabel(listing.serviceType)}</span>
+                    <span>{listing.owner.name} - {getServiceLabel(listing.serviceType)}</span>
                   </div>
-                  <span className={`admin-badge ${listing.available ? 'admin-badge--success' : 'admin-badge--warning'}`}>
-                    {listing.status}
-                  </span>
+                  <StatusBadge meta={listing.statusMeta} />
                 </div>
               ))}
             </div>
@@ -229,39 +271,68 @@ export default function AdminDashboard({ onNavigate }) {
           <section className="admin-panel">
             <div className="admin-panel__header">
               <div>
-                <h2>Gestion des propriétaires</h2>
-                <p>Liste des comptes propriétaires, statut de validation et volume d'annonces.</p>
+                <h2>Gestion des proprietaires</h2>
+                <p>Validez les requetes et dossiers, mettez un compte en pause ou rejetez-le.</p>
               </div>
             </div>
             <div className="admin-table-wrap">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Propriétaire</th>
+                    <th>Proprietaire</th>
                     <th>Contact</th>
                     <th>Annonces</th>
                     <th>Statut</th>
+                    <th>Edition</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {owners.map((owner) => (
-                    <tr key={owner.id}>
-                      <td>
-                        <strong>{owner.name}</strong>
-                        <span>ID #{owner.id}</span>
-                      </td>
-                      <td>
-                        <span>{owner.email}</span>
-                        <span>{owner.phone}</span>
-                      </td>
-                      <td>{owner.listings.length}</td>
-                      <td>
-                        <span className={`admin-badge ${owner.status === 'Validé' ? 'admin-badge--success' : owner.status === 'Suspendu' ? 'admin-badge--danger' : 'admin-badge--warning'}`}>
-                          {owner.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {owners.map((owner) => {
+                    const ownerMeta = getStatusMeta(ownerStatuses, owner.status)
+                    return (
+                      <tr key={owner.id}>
+                        <td>
+                          <strong>{owner.name}</strong>
+                          <span>ID #{owner.id}</span>
+                        </td>
+                        <td>
+                          <span>{owner.email}</span>
+                          <span>{owner.phone}</span>
+                        </td>
+                        <td>{owner.listings.length}</td>
+                        <td>
+                          <StatusBadge meta={ownerMeta} />
+                        </td>
+                        <td>
+                          <div className="admin-edit-controls">
+                            <select
+                              className="admin-select"
+                              value={owner.status}
+                              onChange={(event) => updateOwnerStatus(owner.id, event.target.value)}
+                              aria-label={`Modifier le statut de ${owner.name}`}
+                            >
+                              {ownerStatuses.map((status) => (
+                                <option key={status.value} value={status.value}>
+                                  {status.label}
+                                </option>
+                              ))}
+                            </select>
+                            <div className="admin-quick-actions">
+                              <button type="button" className="admin-action" onClick={() => updateOwnerStatus(owner.id, 'validated')}>
+                                Valider
+                              </button>
+                              <button type="button" className="admin-action" onClick={() => updateOwnerStatus(owner.id, 'paused')}>
+                                Pause
+                              </button>
+                              <button type="button" className="admin-action admin-action--danger" onClick={() => updateOwnerStatus(owner.id, 'rejected')}>
+                                Rejeter
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
@@ -273,7 +344,7 @@ export default function AdminDashboard({ onNavigate }) {
             <div className="admin-panel__header">
               <div>
                 <h2>Gestion des annonces</h2>
-                <p>Contrôlez la visibilité, les propriétaires et les catégories des annonces.</p>
+                <p>Editez le statut des annonces: publier, en attente, rejeter ou plus disponible.</p>
               </div>
               <input
                 className="admin-search"
@@ -290,24 +361,40 @@ export default function AdminDashboard({ onNavigate }) {
                   <div className="admin-listing__body">
                     <div>
                       <h3>{listing.name}</h3>
-                      <p>{listing.owner.name} · {listing.location}</p>
+                      <p>{listing.owner.name} - {listing.location}</p>
                     </div>
                     <div className="admin-listing__meta">
                       <span>{getServiceLabel(listing.serviceType)}</span>
                       <span>{getCategoryLabel(listing.serviceType, listing.category)}</span>
-                      <span>{listing.price}€ / {listing.priceUnit}</span>
+                      <span>{listing.price} EUR / {listing.priceUnit}</span>
                     </div>
                     <div className="admin-listing__footer">
-                      <span className={`admin-badge ${listing.available ? 'admin-badge--success' : 'admin-badge--warning'}`}>
-                        {listing.status}
-                      </span>
-                      <button
-                        type="button"
-                        className="admin-action"
-                        onClick={() => toggleListingAvailability(listing.id)}
-                      >
-                        {listing.available ? 'Désactiver' : 'Publier'}
-                      </button>
+                      <StatusBadge meta={listing.statusMeta} />
+                      <div className="admin-edit-controls">
+                        <select
+                          className="admin-select"
+                          value={listing.adminStatus}
+                          onChange={(event) => updateListingStatus(listing.id, event.target.value)}
+                          aria-label={`Modifier le statut de ${listing.name}`}
+                        >
+                          {listingStatuses.map((status) => (
+                            <option key={status.value} value={status.value}>
+                              {status.label}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="admin-quick-actions">
+                          <button type="button" className="admin-action" onClick={() => updateListingStatus(listing.id, 'published')}>
+                            Publier
+                          </button>
+                          <button type="button" className="admin-action" onClick={() => updateListingStatus(listing.id, 'pending')}>
+                            Attente
+                          </button>
+                          <button type="button" className="admin-action admin-action--danger" onClick={() => updateListingStatus(listing.id, 'rejected')}>
+                            Rejeter
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -320,22 +407,22 @@ export default function AdminDashboard({ onNavigate }) {
           <section className="admin-panel">
             <div className="admin-panel__header">
               <div>
-                <h2>Réservations</h2>
-                <p>Paramètres de suivi des demandes, validations et annulations.</p>
+                <h2>Reservations</h2>
+                <p>Parametres de suivi des demandes, validations et annulations.</p>
               </div>
             </div>
             <div className="admin-settings-grid">
               <div className="admin-setting">
                 <strong>Validation automatique</strong>
-                <span>Activée pour les propriétaires validés.</span>
+                <span>Activee pour les proprietaires valides.</span>
               </div>
               <div className="admin-setting">
                 <strong>Notifications</strong>
-                <span>Email administrateur et propriétaire.</span>
+                <span>Email administrateur et proprietaire.</span>
               </div>
               <div className="admin-setting">
                 <strong>Annulations</strong>
-                <span>Contrôle manuel pour les réservations sensibles.</span>
+                <span>Controle manuel pour les reservations sensibles.</span>
               </div>
             </div>
           </section>
@@ -345,23 +432,23 @@ export default function AdminDashboard({ onNavigate }) {
           <section className="admin-panel">
             <div className="admin-panel__header">
               <div>
-                <h2>Paramètres de la plateforme</h2>
-                <p>Réglages généraux disponibles pour l'administration.</p>
+                <h2>Parametres de la plateforme</h2>
+                <p>Reglages generaux disponibles pour l'administration.</p>
               </div>
             </div>
             <div className="admin-settings-grid">
               <label className="admin-setting">
-                <strong>Validation des nouveaux propriétaires</strong>
+                <strong>Validation des nouveaux proprietaires</strong>
                 <span>Revue obligatoire avant publication.</span>
                 <input type="checkbox" defaultChecked />
               </label>
               <label className="admin-setting">
                 <strong>Publication directe des annonces</strong>
-                <span>Limiter aux comptes propriétaires validés.</span>
+                <span>Limiter aux comptes proprietaires valides.</span>
                 <input type="checkbox" />
               </label>
               <label className="admin-setting">
-                <strong>Alertes de modération</strong>
+                <strong>Alertes de moderation</strong>
                 <span>Notifier l'administrateur en cas d'annonce indisponible.</span>
                 <input type="checkbox" defaultChecked />
               </label>

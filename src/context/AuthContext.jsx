@@ -28,13 +28,13 @@ export function AuthProvider({ children }) {
     }
   }, [user])
 
-  const register = ({ name, email, password }) => {
+  const register = ({ name, email, password, role = 'client', phone = '', company = '' }) => {
     // In a real app, this would call an API
     const users = JSON.parse(localStorage.getItem('registered_users') || '[]')
     if (users.find((u) => u.email === email)) {
       throw new Error('Un compte avec cet email existe déjà.')
     }
-    const newUser = { id: Date.now(), name, email, password, role: 'client' }
+    const newUser = { id: Date.now(), name, email, password, role, phone, company }
     localStorage.setItem('registered_users', JSON.stringify([...users, newUser]))
     const { password: _, ...safeUser } = newUser
     setUser(safeUser)
