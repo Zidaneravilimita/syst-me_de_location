@@ -9,6 +9,7 @@ import BookingModal from './components/BookingModal'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import AdminDashboard from './pages/AdminDashboard'
 import { listings as allListings, locations } from './data/listings'
 
 function getDefaultDates() {
@@ -76,7 +77,7 @@ export default function App() {
   if (page === 'login') {
     return (
       <LoginPage
-        onNavigate={setPage}
+        onNavigate={(nextPage) => setPage(selectedRole === 'admin' && nextPage === 'home' ? 'dashboard' : nextPage)}
         canAccessRegister={selectedRole !== 'admin'}
       />
     )
@@ -88,6 +89,10 @@ export default function App() {
     }
 
     return <RegisterPage onNavigate={setPage} canAccessLogin={selectedRole !== 'admin'} />
+  }
+
+  if (page === 'dashboard') {
+    return <AdminDashboard onNavigate={setPage} />
   }
 
   return (
