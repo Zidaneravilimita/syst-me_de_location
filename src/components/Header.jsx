@@ -8,10 +8,10 @@ export default function Header({ onNavigate }) {
     { href: '#annonces', label: 'Offres' },
     { href: '#services', label: 'Services' },
     { href: '#avantages', label: 'Avantages' },
-    { href: '#connexion', label: 'Connexion', target: 'login' },
-    { href: '#inscription', label: 'Inscription', target: 'register' },
     { href: '#contact', label: 'Contact' },
   ]
+
+
 
   const handleNavigate = (target) => {
     setMenuOpen(false)
@@ -51,7 +51,19 @@ export default function Header({ onNavigate }) {
           >
             Connexion
           </a>
+          <a
+            href="#inscription"
+            className="nav__link"
+            onClick={(event) => {
+              event.preventDefault()
+              handleNavigate('register')
+            }}
+          >
+            Inscription
+          </a>
+
         </nav>
+
 
         <button
           type="button"
