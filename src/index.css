@@ -133,7 +133,7 @@ a {
 .nav {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 48px;
 }
 
 .nav__link {
@@ -141,10 +141,6 @@ a {
   font-weight: 500;
   color: var(--text);
   transition: color 0.2s;
-}
-
-.nav__link:hover {
-  color: var(--primary);
 }
 
 .nav__cta {

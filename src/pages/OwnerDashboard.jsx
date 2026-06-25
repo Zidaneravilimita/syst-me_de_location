@@ -13,6 +13,7 @@ const emptyForm = {
   specs: '',
   features: '',
   image: '',
+  imageFile: null,
 }
 
 const demoOwnerListings = [
@@ -84,8 +85,16 @@ export default function OwnerDashboard({ onNavigate }) {
     })
   }
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const imageUrl = URL.createObjectURL(file)
+      setForm((prev) => ({ ...prev, image: imageUrl, imageFile: file }))
+    }
+  }
+
   const resetForm = () => {
-    setForm(emptyForm)
+    setForm({ ...emptyForm, imageFile: null })
     setEditingId(null)
   }
 
@@ -121,6 +130,7 @@ export default function OwnerDashboard({ onNavigate }) {
       specs: listing.specs.join(', '),
       features: listing.features.join(', '),
       image: listing.image,
+      imageFile: null,
     })
     setActiveView('create')
   }
@@ -320,8 +330,13 @@ export default function OwnerDashboard({ onNavigate }) {
               </label>
 
               <label className="auth-field owner-form__wide">
-                <span className="auth-label">Image URL</span>
-                <input className="auth-input" name="image" value={form.image} onChange={handleFieldChange} placeholder="https://..." />
+                <span className="auth-label">Image</span>
+                <input className="auth-input" type="file" accept="image/*" onChange={handleImageUpload} />
+                {form.image && (
+                  <div className="image-preview">
+                    <img src={form.image} alt="Aperçu" style={{ maxWidth: '200px', marginTop: '10px', borderRadius: '8px' }} />
+                  </div>
+                )}
               </label>
 
               <div className="owner-form__actions owner-form__wide">

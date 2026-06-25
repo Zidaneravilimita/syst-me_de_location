@@ -1,14 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
+import { DEV_USER } from './devUser'
+
 const AuthContext = createContext(null)
 
-const DEV_USER = {
-  id: 'dev-user',
-  name: 'Compte exemple',
-  email: 'exemple@gmail.com',
-  password: '12345',
-  role: 'admin',
-}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -36,7 +31,8 @@ export function AuthProvider({ children }) {
     }
     const newUser = { id: Date.now(), name, email, password, role, phone, company }
     localStorage.setItem('registered_users', JSON.stringify([...users, newUser]))
-    const { password: _, ...safeUser } = newUser
+    const { password: __password, ...safeUser } = newUser
+    void __password
     setUser(safeUser)
     return safeUser
   }
@@ -47,7 +43,8 @@ export function AuthProvider({ children }) {
     if (!found) {
       throw new Error('Email ou mot de passe incorrect.')
     }
-    const { password: _, ...safeUser } = found
+    const { password: __password, ...safeUser } = found
+    void __password
     setUser(safeUser)
     return safeUser
   }
@@ -61,7 +58,7 @@ export function AuthProvider({ children }) {
   )
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
   return ctx
