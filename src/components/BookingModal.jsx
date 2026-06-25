@@ -19,7 +19,6 @@ export default function BookingModal({ listing, search, onClose }) {
 
   const total = listing.price * days
   const unitLabel = listing.priceUnit === 'nuit' ? 'nuit' : 'jour'
-  const unitLabelPlural = listing.priceUnit === 'nuit' ? 'nuits' : 'jours'
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -45,7 +44,7 @@ export default function BookingModal({ listing, search, onClose }) {
               <p><strong>Service</strong> {getServiceLabel(listing.serviceType)}</p>
               <p><strong>Lieu</strong> {search.location}</p>
               <p><strong>Dates</strong> {search.startDate} → {search.endDate}</p>
-              <p className="modal__total"><strong>Total</strong> {total}€</p>
+              <p className="modal__total"><strong>Total</strong> {total} Ar</p>
             </div>
             <button type="button" className="btn btn--primary btn--sm btn--full" onClick={onClose}>
               Fermer
@@ -59,7 +58,7 @@ export default function BookingModal({ listing, search, onClose }) {
               <img src={listing.image} alt={listing.name} />
               <div className="modal__listing-info">
                 <p className="modal__listing-name">{listing.name}</p>
-                <p className="modal__price">{listing.price}€ / {unitLabel}</p>
+                <p className="modal__price">{listing.price} Ar / {unitLabel}</p>
               </div>
             </div>
 
@@ -67,7 +66,7 @@ export default function BookingModal({ listing, search, onClose }) {
               <p><strong>Lieu</strong> {search.location}</p>
               <p><strong>Arrivée</strong> {search.startDate || '—'}</p>
               <p><strong>Départ</strong> {search.endDate || '—'}</p>
-              <p className="modal__total"><strong>Total</strong> {total}€</p>
+              <p className="modal__total"><strong>Total</strong> {total} Ar</p>
             </div>
 
             <form className="modal__form" onSubmit={handleSubmit}>
@@ -107,7 +106,7 @@ export default function BookingModal({ listing, search, onClose }) {
                 />
               </div>
               <button type="submit" className="btn btn--primary btn--sm btn--full">
-                Confirmer — {total}€
+                Confirmer — {total} Ar
               </button>
             </form>
           </>
@@ -116,3 +115,4 @@ export default function BookingModal({ listing, search, onClose }) {
     </div>
   )
 }
+

@@ -45,7 +45,7 @@ export default function ListingCard({ listing, onBook }) {
 
         <div className="listing-card__footer">
           <div className="listing-card__price">
-            <strong>{listing.price}€</strong>
+            <strong>{listing.price} Ar</strong>
             <span>{unitLabel}</span>
           </div>
           <button

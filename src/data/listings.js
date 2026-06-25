@@ -38,14 +38,14 @@ export const subcategories = {
 }
 
 export const locations = [
-  'Paris Centre',
-  'Paris Aéroport CDG',
-  'Lyon Part-Dieu',
-  'Marseille Saint-Charles',
-  'Bordeaux Gare',
-  'Nice Côte d\'Azur',
-  'Chamonix Mont-Blanc',
-  'Annecy Lac',
+  'Majunga',
+  'Antananarivo',
+  'Tamatave',
+  'Tuléar',
+  'Antsirabe',
+  'Fianarantsoa',
+  'Diego',
+  'Nosy Bé',
 ]
 
 export const listings = [
@@ -62,7 +62,7 @@ export const listings = [
     rating: 4.8,
     available: true,
     features: ['Wi-Fi', 'Parking', 'Climatisation'],
-    location: 'Paris Centre',
+    location: 'Antananarivo',
   },
   {
     id: 2,
@@ -76,7 +76,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['Piscine', 'Jardin', 'Barbecue'],
-    location: 'Nice Côte d\'Azur',
+    location: 'Majunga',
   },
   {
     id: 3,
@@ -90,7 +90,7 @@ export const listings = [
     rating: 4.5,
     available: true,
     features: ['Wi-Fi', 'Cuisine équipée', 'Métro 2 min'],
-    location: 'Lyon Part-Dieu',
+    location: 'Nosy Bé',
   },
   {
     id: 4,
@@ -104,7 +104,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['Cheminée', 'Sauna', 'Ski aux pieds'],
-    location: 'Chamonix Mont-Blanc',
+    location: 'Tamatave',
   },
   {
     id: 5,
@@ -118,7 +118,7 @@ export const listings = [
     rating: 4.7,
     available: false,
     features: ['Terrasse', 'Vue mer', 'Plage 5 min'],
-    location: 'Marseille Saint-Charles',
+    location: 'Tuléar',
   },
 
   // Voitures
@@ -134,7 +134,7 @@ export const listings = [
     rating: 4.7,
     available: true,
     features: ['Climatisation', 'Bluetooth', 'GPS'],
-    location: 'Paris Centre',
+    location: 'Antananarivo',
   },
   {
     id: 7,
@@ -148,7 +148,7 @@ export const listings = [
     rating: 4.8,
     available: true,
     features: ['GPS', 'Toit panoramique', 'Caméra recul'],
-    location: 'Lyon Part-Dieu',
+    location: 'Diego',
   },
   {
     id: 8,
@@ -162,7 +162,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['Sièges cuir', 'GPS premium', 'Toit ouvrant'],
-    location: 'Paris Aéroport CDG',
+    location: 'Majunga',
   },
   {
     id: 9,
@@ -176,7 +176,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['Autopilot', '500 km autonomie', 'Superchargeur'],
-    location: 'Bordeaux Gare',
+    location: 'Antsirabe',
   },
   {
     id: 10,
@@ -190,7 +190,7 @@ export const listings = [
     rating: 4.4,
     available: true,
     features: ['Grande capacité', 'Hayon électrique'],
-    location: 'Marseille Saint-Charles',
+    location: 'Diego',
   },
 
   // Motos
@@ -206,7 +206,7 @@ export const listings = [
     rating: 4.8,
     available: true,
     features: ['ABS', 'Équipement inclus', 'Casque fourni'],
-    location: 'Paris Centre',
+    location: 'Tamatave',
   },
   {
     id: 12,
@@ -220,7 +220,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['GPS off-road', 'Bagagerie', 'Assurance incluse'],
-    location: 'Annecy Lac',
+    location: 'Fianarantsoa',
   },
   {
     id: 13,
@@ -234,7 +234,7 @@ export const listings = [
     rating: 4.6,
     available: true,
     features: ['Casque inclus', 'Antivol', 'Léger et maniable'],
-    location: 'Nice Côte d\'Azur',
+    location: 'Nosy Bé',
   },
   {
     id: 14,
@@ -248,7 +248,7 @@ export const listings = [
     rating: 4.7,
     available: false,
     features: ['Style iconique', 'Casque premium', 'Assurance tous risques'],
-    location: 'Bordeaux Gare',
+    location: 'Nosy Bé',
   },
 
   // Quads
@@ -264,7 +264,7 @@ export const listings = [
     rating: 4.8,
     available: true,
     features: ['Suspension sport', 'Équipement complet', 'Guide inclus'],
-    location: 'Chamonix Mont-Blanc',
+    location: 'Antananarivo',
   },
   {
     id: 16,
@@ -278,7 +278,7 @@ export const listings = [
     rating: 4.6,
     available: true,
     features: ['Benne arrière', 'Remorque dispo', 'Idéal terrain'],
-    location: 'Annecy Lac',
+    location: 'Fianarantsoa',
   },
   {
     id: 17,
@@ -292,7 +292,7 @@ export const listings = [
     rating: 4.5,
     available: true,
     features: ['Limitateur vitesse', 'Casque enfant', 'Supervision adulte'],
-    location: 'Nice Côte d\'Azur',
+    location: 'Tuléar',
   },
   {
     id: 18,
@@ -306,7 +306,7 @@ export const listings = [
     rating: 4.9,
     available: true,
     features: ['Puissance max', 'GPS terrain', 'Assurance incluse'],
-    location: 'Chamonix Mont-Blanc',
+    location: 'Tamatave',
   },
 ]
 

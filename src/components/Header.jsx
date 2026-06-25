@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import Logo from './Logo'
 
+import { useAuth } from '../context/AuthContext'
+
 export default function Header({ onNavigate }) {
+  const { user, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
 
   const links = [
@@ -11,12 +14,17 @@ export default function Header({ onNavigate }) {
     { href: '#contact', label: 'Contact' },
   ]
 
-
-
   const handleNavigate = (target) => {
     setMenuOpen(false)
     onNavigate?.(target)
   }
+
+  const handleLogout = () => {
+    logout()
+    onNavigate?.('landing')
+    setMenuOpen(false)
+  }
+
 
   return (
     <header className="header">
@@ -41,26 +49,43 @@ export default function Header({ onNavigate }) {
               {link.label}
             </a>
           ))}
-          <a
-            href="#connexion"
-            className="btn btn--primary nav__cta"
-            onClick={(event) => {
-              event.preventDefault()
-              handleNavigate('login')
-            }}
-          >
-            Connexion
-          </a>
-          <a
-            href="#inscription"
-            className="nav__link"
-            onClick={(event) => {
-              event.preventDefault()
-              handleNavigate('register')
-            }}
-          >
-            Inscription
-          </a>
+          {user ? (
+            <a
+              href="#logout"
+              className="btn btn--primary nav__cta"
+              onClick={(event) => {
+                event.preventDefault()
+                handleLogout()
+              }}
+            >
+              Déconnexion
+            </a>
+          ) : (
+            <>
+              <a
+                href="#connexion"
+                className="btn btn--primary nav__cta"
+                onClick={(event) => {
+                  event.preventDefault()
+                  handleNavigate('login')
+                }}
+              >
+                Connexion
+              </a>
+              <a
+                href="#inscription"
+                className="nav__link"
+                onClick={(event) => {
+                  event.preventDefault()
+                  handleNavigate('register')
+                }}
+              >
+                Inscription
+              </a>
+            </>
+          )}
+
+
 
         </nav>
 
