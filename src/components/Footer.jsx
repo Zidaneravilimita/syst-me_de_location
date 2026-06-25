@@ -1,5 +1,13 @@
 import { serviceTypes } from '../data/listings'
 import Logo from './Logo'
+import { Phone, Mail, MapPin, Mailbox, Home, Car, Bike, Zap } from 'lucide-react'
+
+const serviceIcons = {
+  maison: Home,
+  voiture: Car,
+  moto: Bike,
+  quad: Zap,
+}
 
 export default function Footer() {
   const services = serviceTypes.filter((s) => s.id !== 'all')
@@ -28,18 +36,22 @@ export default function Footer() {
         <div className="footer__links">
           <h4>Services</h4>
           <ul>
-            {services.map((s) => (
-              <li key={s.id}><a href="#annonces">{s.icon} {s.label}</a></li>
-            ))}
+            {services.map((s) => {
+              const Icon = serviceIcons[s.id]
+              return (
+                <li key={s.id}><a href="#annonces"><Icon size={16} /> {s.label}</a></li>
+              )
+            })}
           </ul>
         </div>
 
         <div className="footer__contact">
           <h4>Contact</h4>
           <ul>
-            <li>📞 01 23 45 67 89</li>
-            <li>📧 contact@lochub.fr</li>
-            <li>📍 15 rue de la République, Paris</li>
+            <li><Phone size={16} /> +261 32 68 792 14</li>
+            <li><Mail size={16} /> tahiendrazazidane@gmail.com</li>
+            <li><MapPin size={16} /> Rue Mahavoky Mahajanga</li>
+            <li><Mailbox size={16} /> 401 Madagascar</li>
           </ul>
         </div>
       </div>

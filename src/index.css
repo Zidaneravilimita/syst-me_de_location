@@ -140,7 +140,24 @@ a {
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
-  transition: color 0.2s;
+  transition: color 0.3s;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav__link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav__link:hover::after {
+  width: 100%;
 }
 
 .nav__cta {
@@ -765,6 +782,9 @@ a {
 .footer__contact li {
   margin-bottom: 8px;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .footer__links a:hover {

@@ -48,10 +48,7 @@ export default function Header({ onNavigate }) {
               }}
             >
               <link.icon className="w-2.5 h-2.5 transition-transform duration-300 group-hover:rotate-12" />
-              <span className="relative">
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </span>
+              <span>{link.label}</span>
             </a>
           ))}
           {user ? (
@@ -88,10 +85,7 @@ export default function Header({ onNavigate }) {
                 }}
               >
                 <UserPlus className="w-3 h-3 transition-transform duration-300 group-hover:rotate-12" />
-                <span className="relative">
-                  Inscription
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-                </span>
+                <span>Inscription</span>
               </a>
             </>
           )}
