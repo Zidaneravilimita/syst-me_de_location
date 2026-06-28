@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Appartement Cosy - Centre Ville",
+      "description": "Charmant appartement pour courts séjours.",
+      "price": 85,
+      "currency": "EUR",
+      "image": "/images/listing-1.jpg",
+      "status": "published",
+      "available": true,
+      "category": "appartement",
+      "serviceType": "location",
+      "priceUnit": "nuit",
+      "location": "Paris"
+    },
+    {
+      "id": 2,
+      "title": "Maison avec Jardin",
+      "description": "Maison spacieuse avec jardin.",
+      "price": 140,
+      "currency": "EUR",
+      "image": "/images/listing-2.jpg",
+      "status": "pending",
+      "available": false,
+      "category": "maison",
+      "serviceType": "location",
+      "priceUnit": "nuit",
+      "location": "Lyon"
+    }
+  ]
+}
+

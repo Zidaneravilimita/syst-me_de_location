@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import Logo from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
-import { getCategoryLabel, getServiceLabel, listings as initialListings } from '../data/listings'
+import { getCategoryLabel, getServiceLabel } from '../data/listings'
+import { fetchProperties, updateProperty } from '../api/backendClient'
+
 
 const ownerStatuses = [
   { value: 'validated', label: 'Valide', badge: 'success' },
@@ -147,23 +149,48 @@ export default function AdminDashboard({ onNavigate }) {
   const { user, logout } = useAuth()
   const [activeMenu, setActiveMenu] = useState('overview')
   const [owners, setOwners] = useState(initialOwners)
-  const [listings, setListings] = useState(() =>
-    initialListings.map((listing, index) => ({
-      ...listing,
-      adminStatus: getInitialListingStatus(listing, index),
-    })),
-  )
+  const [properties, setProperties] = useState([])
   const [query, setQuery] = useState('')
+  const [loadingListings, setLoadingListings] = useState(false)
+
+  useEffect(() => {
+    let mounted = true
+    setLoadingListings(true)
+    fetchProperties()
+      .then((items) => {
+        if (!mounted) return
+        setProperties(items)
+      })
+      .catch(() => {
+        if (!mounted) return
+        setProperties([])
+      })
+      .finally(() => {
+        if (!mounted) return
+        setLoadingListings(false)
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
 
   const enrichedListings = useMemo(
     () =>
-      listings.map((listing, index) => ({
-        ...listing,
+      properties.map((property, index) => ({
+        ...property,
+        id: property.id,
+        // compat UI existing fields
+        name: property.title,
+        adminStatus: property.status,
+        priceUnit: property.priceUnit || 'nuit',
         owner: owners[index % owners.length],
-        statusMeta: getStatusMeta(listingStatuses, listing.adminStatus),
+        statusMeta: getStatusMeta(listingStatuses, property.status),
       })),
-    [listings, owners],
+    [properties, owners],
   )
+
 
   const filteredListings = enrichedListings.filter((listing) => {
     const searchText = `${listing.name} ${listing.location} ${listing.owner.name}`.toLowerCase()
@@ -173,19 +200,33 @@ export default function AdminDashboard({ onNavigate }) {
   const publishedCount = enrichedListings.filter((listing) => listing.adminStatus === 'published').length
   const pendingCount = enrichedListings.filter((listing) => listing.adminStatus === 'pending').length
   const rejectedCount = enrichedListings.filter((listing) => listing.adminStatus === 'rejected').length
+  const unavailableCount = enrichedListings.filter((listing) => listing.adminStatus === 'unavailable').length
+
   const ownerPendingCount = owners.filter((owner) => owner.status === 'verification').length
 
-  const updateListingStatus = (listingId, status) => {
-    setListings((prev) =>
-      prev.map((listing) =>
-        listing.id === listingId
-          ? { ...listing, adminStatus: status, available: status === 'published' }
-          : listing,
-      ),
-    )
+  const [savingId, setSavingId] = useState(null)
+
+  const handleUpdateProperty = async (propertyId, patch) => {
+    setSavingId(propertyId)
+    try {
+      await updateProperty(propertyId, patch)
+      const items = await fetchProperties()
+      setProperties(items)
+    } finally {
+      setSavingId(null)
+    }
   }
 
+  const handleUpdateField = (listing, field, value) => {
+    // no-op helper for future enhancements
+    void listing
+    void field
+    void value
+  }
+
+
   const updateOwnerStatus = (ownerId, status) => {
+
     setOwners((prev) =>
       prev.map((owner) => (owner.id === ownerId ? { ...owner, status } : owner)),
     )
@@ -242,7 +283,9 @@ export default function AdminDashboard({ onNavigate }) {
           <StatCard label="Annonces" value={enrichedListings.length} detail={`${publishedCount} publiees`} />
           <StatCard label="A verifier" value={pendingCount} detail="annonces en attente" />
           <StatCard label="Rejetees" value={rejectedCount} detail="annonces refusees" />
+          <StatCard label="Plus disponibles" value={unavailableCount} detail="annonces indisponibles" />
         </section>
+
 
         {activeMenu === 'overview' && (
           <section className="admin-panel">
@@ -374,8 +417,15 @@ export default function AdminDashboard({ onNavigate }) {
                         <select
                           className="admin-select"
                           value={listing.adminStatus}
-                          onChange={(event) => updateListingStatus(listing.id, event.target.value)}
+                          onChange={(event) => {
+                            const status = event.target.value
+                            handleUpdateProperty(listing.id, {
+                              status,
+                              available: status === 'published',
+                            })
+                          }}
                           aria-label={`Modifier le statut de ${listing.name}`}
+                          disabled={savingId === listing.id}
                         >
                           {listingStatuses.map((status) => (
                             <option key={status.value} value={status.value}>
@@ -384,17 +434,33 @@ export default function AdminDashboard({ onNavigate }) {
                           ))}
                         </select>
                         <div className="admin-quick-actions">
-                          <button type="button" className="admin-action" onClick={() => updateListingStatus(listing.id, 'published')}>
+                          <button
+                            type="button"
+                            className="admin-action"
+                            onClick={() => handleUpdateProperty(listing.id, { status: 'published', available: true })}
+                            disabled={savingId === listing.id}
+                          >
                             Publier
                           </button>
-                          <button type="button" className="admin-action" onClick={() => updateListingStatus(listing.id, 'pending')}>
+                          <button
+                            type="button"
+                            className="admin-action"
+                            onClick={() => handleUpdateProperty(listing.id, { status: 'pending', available: false })}
+                            disabled={savingId === listing.id}
+                          >
                             Attente
                           </button>
-                          <button type="button" className="admin-action admin-action--danger" onClick={() => updateListingStatus(listing.id, 'rejected')}>
+                          <button
+                            type="button"
+                            className="admin-action admin-action--danger"
+                            onClick={() => handleUpdateProperty(listing.id, { status: 'rejected', available: false })}
+                            disabled={savingId === listing.id}
+                          >
                             Rejeter
                           </button>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </article>
