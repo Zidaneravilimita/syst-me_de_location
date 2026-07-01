@@ -27,6 +27,19 @@
       "serviceType": "location",
       "priceUnit": "nuit",
       "location": "Lyon"
+    },{
+      "id": 3,
+      "title": "Tems Palace",
+      "description": "Maison spacieuse avec jardin.",
+      "price": 140,
+      "currency": "EUR",
+      "image": "/images/listing-2.jpg",
+      "status": "pending",
+      "available": false,
+      "category": "maison",
+      "serviceType": "location",
+      "priceUnit": "nuit",
+      "location": "Marseille"
     }
   ]
 }
